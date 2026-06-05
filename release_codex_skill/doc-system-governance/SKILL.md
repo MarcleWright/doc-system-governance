@@ -1,42 +1,36 @@
 ---
 name: doc-system-governance
-description: Create, normalize, and maintain a layered project documentation system centered on `doc/` or an existing equivalent such as `docs/`. Use when Codex needs to bootstrap project docs, create or repair a `doc/` tree, reorganize mixed or catch-all documentation by ownership boundary, migrate product/architecture/design/engineering/AI content into separate layers, establish AI task-log-context records, or keep project documentation aligned after feature, architecture, UI, workflow, testing, release, or agent-process changes. Trigger on requests about documentation systems, doc governance, doc restructuring, doc taxonomy, project knowledge organization, or AI-maintainable project records. Do not use for ordinary single-file prose edits that do not materially affect the documentation system.
+description: Use when a project needs a structured documentation system, when existing docs need to be reorganized by ownership boundary, or when a task explicitly includes documentation-system maintenance across product, architecture, design, engineering, or ai records. This skill covers both initial doc-system creation and ongoing governance, but should not be used for ordinary single-file prose edits or routine code changes that do not materially affect the documentation system.
 ---
 
 # Doc System Governance
 
-Create a documentation system that separates stable project truth from execution history and keeps each fact in one primary home. Keep the system small, explicit, and maintainable by later agents.
+This skill creates, repairs, and maintains a project documentation system centered on `doc/`.
 
-Read [references/doc-system-rules.md](references/doc-system-rules.md) before substantial documentation work. Read [references/file-templates.md](references/file-templates.md) only when creating missing core files.
+Use it for both:
 
-## Workflow
+- first-time documentation-system bootstrap
+- later documentation maintenance after project changes
 
-### 1. Inspect before editing
+Read [references/doc-system-rules.md](references/doc-system-rules.md) before substantial documentation work.
 
-Check for:
+Read [references/file-templates.md](references/file-templates.md) when creating missing core files.
 
-- existing `doc/`, `docs/`, or another established documentation root
-- mixed catch-all documents that combine product, architecture, design, engineering, or task history
-- missing owner-layer files
-- duplicated rules across files
+## When To Use
 
-Preserve an established project convention unless there is a strong reason to change it.
+Use this skill when the user asks to:
 
-### 2. Route every fact to one owner
+- create a project documentation system
+- standardize or reorganize existing docs
+- split mixed documents into clearer layers
+- update project docs after feature, architecture, UI, workflow, or release changes when the task materially affects documentation-system truth
+- establish AI-friendly task, log, context, or decision records
 
-Use this default routing:
+Do not use this skill for ordinary single-file prose edits that do not affect the doc system.
 
-- product scope, feature intent, business rules -> `product/`
-- technical boundaries, modules, interfaces, data ownership -> `architecture/`
-- user-visible behavior, UI states, interaction rules -> `design/`
-- setup, testing, release, troubleshooting, contributor workflow -> `engineering/`
-- agent workflow, task records, decisions, current AI context -> `ai/`
+## Core Model
 
-If a change touches multiple layers, update the primary owner first and only the minimum downstream documents that truly changed.
-
-### 3. Bootstrap minimally
-
-If the project lacks a usable documentation system, create the minimum useful structure first:
+The default documentation backbone is:
 
 ```text
 doc/
@@ -48,51 +42,97 @@ doc/
   ai/
 ```
 
-Do not create a large empty tree without evidence that the project needs it.
+These layers mean:
 
-### 4. Repair legacy docs by extraction
+- `product` = what the product is, what features exist, what business rules hold
+- `architecture` = how the system is structured technically
+- `design` = how users interact with the system
+- `engineering` = how the project is developed, tested, packaged, released, and operated
+- `ai` = how AI agents collaborate and how task history/current context are recorded
 
-When a mixed legacy document exists:
+## Workflow
+
+### 1. Inspect Before Editing
+
+First inspect the current documentation state:
+
+- existing `doc/` or equivalent folders
+- mixed catch-all docs
+- missing owner-layer docs
+- duplicated rules across layers
+
+### 2. Route By Ownership
+
+Before editing any content, decide its primary owner:
+
+- product capability or business rule -> `product`
+- technical structure or interface boundary -> `architecture`
+- interaction or visible behavior -> `design`
+- setup, testing, packaging, release, troubleshooting -> `engineering`
+- agent workflow, task history, durable work decisions, current agent context -> `ai`
+
+Each fact should have one primary home.
+
+### 3. Bootstrap Minimally
+
+If the project has no proper doc system, create the minimum useful structure first.
+
+Do not create a large empty tree unless the project actually needs it.
+
+Start with the backbone and the smallest set of core files.
+
+### 4. Maintain The System During Normal Work
+
+When a project change happens, update the owning layer first, then only the minimum downstream documents that truly changed.
+
+Do not duplicate the same full explanation across multiple files.
+
+### 5. Reduce Mixed Legacy Docs
+
+If a mixed legacy doc exists:
 
 - treat it as source material
 - extract content into owner documents
-- reduce the old file into an index, stub, or deprecation note after replacements exist
+- shrink the legacy doc into an index, stub, or deprecation note after replacements exist
 
-Do not keep expanding the mixed document as the long-term source of truth.
+Do not keep expanding the mixed doc.
 
-### 5. Maintain the system during normal work
+## Required Maintenance Behaviors
 
-When project changes happen:
+When this skill is active, the agent should preserve these rules:
 
-- update the owning layer first
-- update only the minimum dependent docs
-- avoid repeating the same explanation in multiple files
+- `AI_CONTEXT.md` stays short and current
+- `DEV_LOG.md` stays a concise index, not a transcript dump
+- `DEV_LOG.md` may use structured phase entries with `Status`, short `Summary`, and task links when that improves handoff clarity, but it should still remain a concise index
+- `DEV_LOG.md` may retain a continuous recent work thread across month boundaries when the same work phase is still active
+- task-level detail goes into one file per task
+- task files should include a `Context Delta` section when the task changes durable project memory, introduces follow-up work, or changes rules, structure, or responsibilities
+- durable conclusions go into decisions, not only logs
+- stable truth and temporary execution history stay separated
 
-Prefer gradual cleanup over disruptive rewrites unless the user asked for a broad reorganization.
+## Change Routing
 
-## AI Record Rules
+Use this default routing:
 
-Keep execution history separate from stable truth.
+- product rule or feature-scope change -> update `product`
+- interaction change -> update `design`
+- technical boundary change -> update `architecture`
+- contributor workflow / testing / packaging / release change -> update `engineering`
+- agent workflow or task-tracking change -> update `ai`
 
-- `ai/AI_CONTEXT.md` stays short and current
-- `ai/DEV_LOG.md` stays a concise recent-work index, not a transcript dump
-- `ai/tasks/` keeps one file per task with full execution detail
-- `ai/decisions/` stores durable decisions that should stay visible
-- `Context Delta` belongs in task files only when the task changes durable project memory, workflow, ownership, or follow-up expectations
-
-If a follow-up item matters beyond the finished task, explicitly decide whether it should be promoted into `AI_CONTEXT.md`, `decisions/`, `KNOWN_ISSUES.md`, or `ROADMAP.md`.
+Cross-layer updates are allowed, but they should be minimal and intentional.
 
 ## Output Expectations
 
-For bootstrap or repair requests, usually produce:
+When asked to establish or repair the doc system, the agent should usually produce:
 
-- a minimal documentation backbone if missing
-- core owner-layer files where the project genuinely needs them
-- migrated content in the correct layer
-- reduced dependence on mixed catch-all documents
-- AI-maintainable workflow, log, and task structure when the project has ongoing agent work
+- the required `doc/` backbone if missing
+- core owner-layer files if missing
+- migrated or reorganized content in the correct layer
+- reduced reliance on mixed catch-all documents
+- AI-maintainable task/log/context structure where relevant
 
-For ordinary maintenance after project changes:
+When asked to maintain docs after ordinary project changes, the agent should:
 
 - update only the affected owner-layer docs
 - keep file boundaries clean

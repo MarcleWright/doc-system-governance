@@ -1,6 +1,8 @@
 # File Templates
 
-Use these templates only when a project needs the file and no stronger local convention already exists.
+Use these templates only when creating missing documents.
+
+Adapt them to the project instead of copying blindly.
 
 ## `doc/README.md`
 
@@ -37,6 +39,8 @@ Defines AI workflow, task records, current context, and work history.
 ## Core Workflows
 
 ## Non-goals
+
+## Key Domain Concepts
 ```
 
 ## `product/PRODUCT_REQUIREMENTS.md`
@@ -68,6 +72,8 @@ Defines AI workflow, task records, current context, and work history.
 
 ## Near-Term Priorities
 
+## Medium-Term Priorities
+
 ## Deferred Areas
 ```
 
@@ -83,6 +89,8 @@ Defines AI workflow, task records, current context, and work history.
 ## Responsibility Boundaries
 
 ## Data Flow
+
+## Key Technical Decisions
 ```
 
 ## `architecture/DATA_MODEL.md`
@@ -97,6 +105,8 @@ Defines AI workflow, task records, current context, and work history.
 ## Relationships
 
 ## Important Constraints
+
+## Source Of Truth
 ```
 
 ## `design/UI_GUIDE.md`
@@ -109,6 +119,8 @@ Defines AI workflow, task records, current context, and work history.
 ## Layout Structure
 
 ## Key Visible Behaviors
+
+## Important UI States
 ```
 
 ## `design/INTERACTION_RULES.md`
@@ -116,9 +128,13 @@ Defines AI workflow, task records, current context, and work history.
 ```md
 # Interaction Rules
 
+## Selection Behavior
+
 ## Create / Edit Flows
 
-## Destructive Action Rules
+## Delete / Destructive Action Rules
+
+## Drag And Drop Rules
 
 ## Error / Confirmation Behavior
 ```
@@ -141,6 +157,8 @@ Defines AI workflow, task records, current context, and work history.
 
 ```md
 # Testing
+
+## Test Types
 
 ## Automated Checks
 
@@ -172,6 +190,8 @@ Defines AI workflow, task records, current context, and work history.
 ## Suggested Read Order
 ```
 
+Recommended for projects with ongoing handoffs, multiple agents, or longer-running phases.
+
 ## `ai/AI_WORKFLOW.md`
 
 ```md
@@ -186,6 +206,20 @@ Defines AI workflow, task records, current context, and work history.
 ## Review Rules
 ```
 
+If the project uses planner/coder/reviewer separation, add rules such as:
+
+- Planner defines scope and acceptance criteria in the task file.
+- The implementation agent executes only the task scope and does not expand scope unilaterally.
+- The implementation agent writes an execution report into the same task file after implementation.
+- The implementation agent drafts the task's Context Delta after implementation.
+- Deviations from the original plan are recorded explicitly.
+- Planner or Reviewer may make a small in-scope correction during review, but must record it with explicit authorship in the same task file.
+- Meaningfully out-of-scope follow-up work gets a new task.
+- Planner or Reviewer refines the Context Delta and owns long-term context updates.
+- Planner or Reviewer explicitly classifies any non-local Follow-up item before the task is finalized.
+
+If role names differ, map responsibilities by behavior rather than by exact label.
+
 ## `ai/DEV_LOG.md`
 
 ```md
@@ -193,10 +227,27 @@ Defines AI workflow, task records, current context, and work history.
 
 ## Recent
 
-- YYYY-MM-DD: short summary, related task path such as `ai/tasks/2026-06-04_01_example.md`
+### YYYY-MM-DD Short Phase Title
+
+Status: Done
+
+Summary:
+
+- short outcome or milestone
+- short outcome or milestone
+
+Primary task links:
+
+- `ai/tasks/YYYY-MM-DD_nn_example.md`
 
 ## Archive
 ```
+
+Keep `Recent` continuous when the same active work thread spans a month boundary.
+
+This format should stay concise. Use it as a recent-work index with clear handoff value, not as a replacement for task files.
+
+Prefer relative path text for project-internal references. Use absolute paths only for documents outside the project.
 
 ## `ai/tasks/<task>.md`
 
@@ -221,6 +272,10 @@ Defines AI workflow, task records, current context, and work history.
 
 ## Execution Report
 
+### Implementation Contributor(s)
+
+### Planner/Reviewer Follow-up Fixes
+
 ## Reviewer Notes
 
 ## Context Delta
@@ -234,4 +289,30 @@ Defines AI workflow, task records, current context, and work history.
 ### Follow-up
 
 ## Final Result
+
+## Links
+```
+
+Recommended task filename pattern:
+
+```text
+YYYY-MM-DD_nn_short-task-name.md
+```
+
+Use `nn` as the sequence number for that day only.
+
+If parallel branches create the same date and daily sequence number, resolve the collision later with a pragmatic rename or suffix rather than switching to a global counter.
+
+## `ai/decisions/ADR-0001_<title>.md`
+
+```md
+# Decision
+
+## Context
+
+## Decision
+
+## Reason
+
+## Consequences
 ```

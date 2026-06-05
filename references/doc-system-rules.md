@@ -479,6 +479,22 @@ Rule:
 
 Do not copy full task reports into the main dev log.
 
+Recommended `DEV_LOG.md` entry style:
+
+- prefer one entry per meaningful work thread, milestone, or completed phase
+- use a short heading such as `### YYYY-MM-DD Short Phase Title`
+- include `Status:`
+- include a short `Summary:` section with only the most important bullets
+- include task links such as `Primary task links:` or `Links:`
+
+This richer block format is allowed when it improves handoff clarity, but it must still behave like an index rather than a second full task report.
+
+Practical limits:
+
+- prefer roughly 2 to 6 summary bullets
+- link to task files for execution detail instead of repeating the whole implementation story
+- keep only current or high-value recent entries in `DEV_LOG.md`; move older detail into `logs/`
+
 Reference-path rule for `DEV_LOG.md`:
 
 - for files and documents inside the project, prefer relative path text such as `ai/tasks/2026-06-04_01_example.md`

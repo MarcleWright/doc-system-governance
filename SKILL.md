@@ -103,6 +103,7 @@ When this skill is active, the agent should preserve these rules:
 
 - `AI_CONTEXT.md` stays short and current
 - `DEV_LOG.md` stays a concise index, not a transcript dump
+- `DEV_LOG.md` may use structured phase entries with `Status`, short `Summary`, and task links when that improves handoff clarity, but it should still remain a concise index
 - `DEV_LOG.md` may retain a continuous recent work thread across month boundaries when the same work phase is still active
 - task-level detail goes into one file per task
 - task files should include a `Context Delta` section when the task changes durable project memory, introduces follow-up work, or changes rules, structure, or responsibilities

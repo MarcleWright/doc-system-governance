@@ -1,7 +1,7 @@
 interface:
   display_name: "Doc System Governance"
-  short_description: "Bootstrap, restructure, or govern a layered project doc system."
-  default_prompt: "Use $doc-system-governance to create, restructure, or maintain this project's layered documentation system under doc/ or docs/."
+  short_description: "Creates and maintains a clean project doc system."
+  default_prompt: "Use $doc-system-governance to create, reorganize, or maintain this project's documentation system under doc/."
 
 policy:
   allow_implicit_invocation: false

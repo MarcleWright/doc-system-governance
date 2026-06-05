@@ -227,12 +227,25 @@ If role names differ, map responsibilities by behavior rather than by exact labe
 
 ## Recent
 
-- YYYY-MM-DD: short summary, related task path such as `ai/tasks/2026-06-04_01_example.md`
+### YYYY-MM-DD Short Phase Title
+
+Status: Done
+
+Summary:
+
+- short outcome or milestone
+- short outcome or milestone
+
+Primary task links:
+
+- `ai/tasks/YYYY-MM-DD_nn_example.md`
 
 ## Archive
 ```
 
 Keep `Recent` continuous when the same active work thread spans a month boundary.
+
+This format should stay concise. Use it as a recent-work index with clear handoff value, not as a replacement for task files.
 
 Prefer relative path text for project-internal references. Use absolute paths only for documents outside the project.
 
