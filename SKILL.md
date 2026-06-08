@@ -109,6 +109,13 @@ When this skill is active, the agent should preserve these rules:
 - task files should include a `Context Delta` section when the task changes durable project memory, introduces follow-up work, or changes rules, structure, or responsibilities
 - durable conclusions go into decisions, not only logs
 - stable truth and temporary execution history stay separated
+- all generated or edited documentation files must be written as `UTF-8`, preferably `UTF-8 without BOM`
+- `.md`, `.txt`, `.json`, `.yml`, `.yaml`, and all task, execution, review, dev log, and AI context documents must be saved as `UTF-8`
+- never rely on system default encoding, ANSI, GBK, GB2312, or editor default save encoding
+- on Windows, any script or command that writes files must explicitly choose `UTF-8`
+- use conservative document characters by default: allow Chinese text when needed, prefer ASCII punctuation, prefer plain `"` and `'`, and avoid smart quotes or unnecessary special Unicode punctuation
+- inspect new or modified documents for mojibake or encoding corruption before delivery; if corruption is found, fix it before handoff
+- if existing documents contain encoding damage, apply the smallest semantic repair that removes the corruption without rewriting unrelated content
 
 ## Change Routing
 

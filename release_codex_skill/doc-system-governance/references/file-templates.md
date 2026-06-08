@@ -4,6 +4,8 @@ Use these templates only when creating missing documents.
 
 Adapt them to the project instead of copying blindly.
 
+All documents created from these templates must be written in `UTF-8`, preferably `UTF-8 without BOM`.
+
 ## `doc/README.md`
 
 ```md
@@ -248,6 +250,16 @@ Keep `Recent` continuous when the same active work thread spans a month boundary
 This format should stay concise. Use it as a recent-work index with clear handoff value, not as a replacement for task files.
 
 Prefer relative path text for project-internal references. Use absolute paths only for documents outside the project.
+
+## Encoding and review checklist
+
+Before handing off any document created from these templates, verify:
+
+- file encoding is `UTF-8`
+- no system-default or locale-derived encoding was used during writes
+- no mojibake appears in the rendered file
+- no unnecessary smart quotes or special punctuation were introduced
+- any existing corruption was repaired with the smallest semantic change possible
 
 ## `ai/tasks/<task>.md`
 

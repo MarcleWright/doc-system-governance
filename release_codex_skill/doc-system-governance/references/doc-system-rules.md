@@ -507,6 +507,51 @@ If work at the end of one month and the start of the next month is clearly part 
 
 Treat monthly archives as historical organization, not as a hard boundary for ongoing context.
 
+## 10.1 Encoding and character rules
+
+All documentation files must be written in `UTF-8`, preferably `UTF-8 without BOM`.
+
+This applies to:
+
+- `.md`
+- `.txt`
+- `.json`
+- `.yml`
+- `.yaml`
+- all generated task documents
+- all execution documents
+- all review documents
+- all `DEV_LOG.md` documents
+- all `AI_CONTEXT.md` documents
+
+Do not rely on:
+
+- system default encoding
+- ANSI
+- GBK
+- GB2312
+- editor default save encoding
+
+On Windows, any script or command that writes files must explicitly specify `UTF-8`.
+
+Recommended write patterns:
+
+- PowerShell file writes should pass an explicit UTF-8 encoding
+- Python file writes should use `encoding="utf-8"`
+- JSON/YAML emitters should be configured to write UTF-8 rather than inheriting the host locale
+
+Character policy:
+
+- allow Chinese content normally when the project needs it
+- prefer ASCII punctuation by default
+- prefer plain `" "` and `' '` for quotes
+- avoid smart quotes such as `“ ”` and `‘ ’`
+- avoid unnecessary special Unicode punctuation unless it has a clear purpose
+
+If you see mojibake or encoding corruption such as `鈥`, `锟`, or `�`, treat it as a document quality defect and fix it.
+
+When repairing existing documents with encoding damage, make the smallest semantic change that removes the corruption. Do not rewrite the whole document just to refresh encoding unless that is actually necessary.
+
 ## 11. Context Delta Rule
 
 Task files should include a `Context Delta` section when the task produces durable lessons, future follow-up items, or changes to project rules, structure, ownership, or workflow.
@@ -695,9 +740,11 @@ Before finishing documentation work, verify:
 3. Stable truth and execution history remain separated.
 4. `AI_CONTEXT.md` is short and current.
 5. `DEV_LOG.md` remains concise.
-6. `Context Delta` is used only for durable memory changes, not general summaries.
-7. Durable decisions are not buried only in task files.
-8. The structure is not more detailed than the project currently needs.
+6. New or modified documents were checked for mojibake or encoding corruption.
+7. Document writes used explicit UTF-8 where files were created or rewritten.
+8. `Context Delta` is used only for durable memory changes, not general summaries.
+9. Durable decisions are not buried only in task files.
+10. The structure is not more detailed than the project currently needs.
 
 ## 18. Execution Instruction
 
