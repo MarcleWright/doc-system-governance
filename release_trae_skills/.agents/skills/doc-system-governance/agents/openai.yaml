@@ -1,7 +1,7 @@
 interface:
   display_name: "Doc System Governance"
-  short_description: "Creates and maintains a clean project doc system."
-  default_prompt: "Use $doc-system-governance to create, reorganize, or maintain this project's documentation system under doc/."
+  short_description: "Gates, creates, and maintains project documentation."
+  default_prompt: "Use $doc-system-governance to decide whether this task needs no doc update, light AI context/dev log maintenance, or full documentation governance."
 
 policy:
   allow_implicit_invocation: false
