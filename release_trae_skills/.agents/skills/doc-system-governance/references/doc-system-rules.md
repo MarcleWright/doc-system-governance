@@ -38,10 +38,11 @@ doc/
   architecture/
   design/
   engineering/
+  material/
   ai/
 ```
 
-These five areas are the default system backbone.
+These six areas are the default system backbone.
 
 If the project already uses an established equivalent such as `docs/`, preserve that convention unless there is a strong reason to change it.
 
@@ -169,6 +170,37 @@ Does not belong here:
 - full architecture substitute
 - general engineering instructions
 
+### 4.6 `material`
+
+Purpose:
+
+- store user-provided or local reference inputs used during work
+- keep temporary source material separate from stable project truth
+- provide a safe place for screenshots, pasted briefs, sample files, research notes, and other reference-only artifacts
+
+Belongs here:
+
+- user-supplied reference documents
+- screenshots, exports, samples, and input artifacts
+- temporary research snippets
+- local-only notes that inform a task but should not become durable project truth as-is
+- source material waiting to be summarized or promoted into an owner layer
+
+Does not belong here:
+
+- stable product requirements
+- architecture decisions
+- design rules
+- engineering workflow rules
+- AI task history, execution ledgers, or durable handoff context
+
+Version-control guidance:
+
+- `doc/material/` contents are local-first and usually should not be pushed to the remote
+- when bootstrapping `doc/material/`, prefer adding a local `.gitignore` that ignores contents while allowing an optional `README.md` or `.gitkeep`
+- if specific reference material must be shared, promote the stable conclusion to the correct owner layer, or explicitly track that individual file by user request
+- do not treat unreviewed material as project truth
+
 ## 5. Recommended Initial Files
 
 The agent should create a minimal but usable initial set.
@@ -196,6 +228,10 @@ doc/
     DEV_SETUP.md
     TESTING.md
     KNOWN_ISSUES.md
+
+  material/
+    README.md
+    .gitignore
 
   ai/
     AI_CONTEXT.md
@@ -304,37 +340,62 @@ Role:
 
 - track known problems in a structured way
 
-### 6.12 `AI_CONTEXT.md`
+### 6.12 `material/README.md`
+
+Role:
+
+- explain that `doc/material/` is for local or temporary reference inputs
+- warn that material contents are not stable project truth
+- explain when to promote conclusions into owner-layer documents
+- document the default local-first version-control policy
+
+### 6.13 `material/.gitignore`
+
+Role:
+
+- keep reference material local by default
+- allow a small README or placeholder to be tracked if the project wants the folder structure in git
+
+Typical contents:
+
+```gitignore
+*
+!.gitignore
+!README.md
+!.gitkeep
+```
+
+### 6.14 `AI_CONTEXT.md`
 
 Role:
 
 - short current working context for incoming AI agents
 
-### 6.13 `AI_WORKFLOW.md`
+### 6.15 `AI_WORKFLOW.md`
 
 Role:
 
 - explain how AI agents should work on this project
 
-### 6.14 `DEV_LOG.md`
+### 6.16 `DEV_LOG.md`
 
 Role:
 
 - concise recent work index
 
-### 6.15 `tasks/`
+### 6.17 `tasks/`
 
 Role:
 
 - one file per task with full execution detail
 
-### 6.16 `decisions/`
+### 6.18 `decisions/`
 
 Role:
 
 - durable work decisions that should remain visible over time
 
-### 6.17 `logs/`
+### 6.19 `logs/`
 
 Role:
 
@@ -374,6 +435,12 @@ Execution history belongs in:
 - `ai/tasks`
 - `ai/logs`
 - `ai/DEV_LOG.md`
+
+Reference inputs belong in:
+
+- `material`
+
+Material may inform stable truth, but it is not stable truth until reviewed and promoted into the correct owner layer.
 
 ### 7.4 Smallest Necessary Cross-Layer Updates
 
@@ -437,6 +504,22 @@ Update `architecture` only if the underlying structural design also changed.
 Update:
 
 - `ai`
+
+### 8.6 User-Provided Or Temporary Reference Material
+
+Store:
+
+- `material`
+
+Promote only reviewed conclusions to:
+
+- `product`
+- `architecture`
+- `design`
+- `engineering`
+- `ai`
+
+Do not copy raw reference dumps into stable owner-layer documents.
 
 ## 9. `AI_CONTEXT.md` Rules
 
@@ -506,6 +589,51 @@ Monthly archives are recommended, but they must not break active continuity unne
 If work at the end of one month and the start of the next month is clearly part of the same active thread, `DEV_LOG.md` should keep a concise continuous summary for that thread even if some detailed entries have already moved into `logs/YYYY-MM.md`.
 
 Treat monthly archives as historical organization, not as a hard boundary for ongoing context.
+
+## 10.1 Encoding and character rules
+
+All documentation files must be written in `UTF-8`, preferably `UTF-8 without BOM`.
+
+This applies to:
+
+- `.md`
+- `.txt`
+- `.json`
+- `.yml`
+- `.yaml`
+- all generated task documents
+- all execution documents
+- all review documents
+- all `DEV_LOG.md` documents
+- all `AI_CONTEXT.md` documents
+
+Do not rely on:
+
+- system default encoding
+- ANSI
+- GBK
+- GB2312
+- editor default save encoding
+
+On Windows, any script or command that writes files must explicitly specify `UTF-8`.
+
+Recommended write patterns:
+
+- PowerShell file writes should pass an explicit UTF-8 encoding
+- Python file writes should use `encoding="utf-8"`
+- JSON/YAML emitters should be configured to write UTF-8 rather than inheriting the host locale
+
+Character policy:
+
+- allow Chinese content normally when the project needs it
+- prefer ASCII punctuation by default
+- prefer plain `" "` and `' '` for quotes
+- avoid smart quotes such as `“ ”` and `‘ ’`
+- avoid unnecessary special Unicode punctuation unless it has a clear purpose
+
+If you see mojibake or encoding corruption such as `鈥`, `锟`, or `�`, treat it as a document quality defect and fix it.
+
+When repairing existing documents with encoding damage, make the smallest semantic change that removes the corruption. Do not rewrite the whole document just to refresh encoding unless that is actually necessary.
 
 ## 11. Context Delta Rule
 
@@ -616,6 +744,90 @@ General rule regardless of role naming:
 
 - any agent that materially contributes implementation, correction, or validation work to a task should record the relevant result back into the same task file with clear authorship
 
+## 13.1 Long-Task Self-Loop Execution Documents
+
+Use a long-task self-loop execution document only when the user explicitly asks to create or maintain a multi-round autonomous workflow document, such as:
+
+- "create a long-task self-loop execution document"
+- "创建一个长任务自循环执行文档"
+- "create execution loop md"
+- "落一个 execution-loop 文档"
+- "为这些子任务创建循环执行文档"
+
+Do not create an execution-loop document merely because:
+
+- a task is large
+- a parent task exists
+- sub-tasks are being reviewed
+- ordinary documentation governance is running
+- the agent thinks a loop would be useful
+
+In those cases, mention it as an option if useful, but do not create the file without explicit user direction.
+
+Precondition:
+
+- create an execution-loop document only after the parent task and ordered sub-task list exist
+- exception: the user explicitly asked in the same request to both split the parent task and create the execution-loop document
+- if no ordered sub-task list exists, create or review the decomposition first, then wait for explicit direction before creating the execution-loop document
+
+Purpose:
+
+- preserve the control flow for a large task across context loss
+- keep the agent aligned to the parent task and current sub-task
+- require review and documentation maintenance after each round
+- require a local commit after each completed sub-task unless the user says otherwise
+- prevent unrelated follow-up fixes from being mixed into the current decomposition or implementation loop
+
+Default location:
+
+```text
+doc/ai/tasks/YYYY-MM-DD_nn_execution-loop.md
+```
+
+If the execution loop controls a numbered parent task, include that parent identifier:
+
+```text
+doc/ai/tasks/YYYY-MM-DD_03_execution-loop.md
+```
+
+Required contents:
+
+- objective and parent task link
+- ordered sub-task list with status
+- parent/sub-task naming rule
+- per-round loop procedure
+- scope boundaries and non-goals
+- validation commands and manual-test deferrals
+- documentation maintenance rules
+- commit policy
+- resume instructions
+- execution ledger with completed rounds and commit hashes when available
+
+Per-round loop:
+
+1. Read the execution document, parent task, and current sub-task.
+2. Inspect current code, current task status, recent log entries, and git status.
+3. Implement only the current sub-task scope.
+4. Run the agreed automated checks unless explicitly deferred.
+5. Review the full diff and fix in-scope findings.
+6. Update the current task file with execution notes, reviewer notes, final result, and `Context Delta` when durable context changed.
+7. Update `DEV_LOG.md`, and update `AI_CONTEXT.md` only when current handoff context changed.
+8. Update the execution ledger.
+9. Make one local commit for the completed sub-task unless the user requested a different commit policy.
+10. Reread the parent task before selecting the next sub-task.
+
+Reference rule:
+
+- the parent task should link to the execution-loop document
+- active sub-tasks should link back to the execution-loop document
+- do not duplicate the full execution policy into every sub-task
+
+Boundary rule:
+
+- if a bug, polish item, or behavior change is found outside the current loop scope, record or create a separate follow-up task
+- do not silently expand the loop into unrelated product, architecture, UI, or protocol work
+- do not push local commits unless the user explicitly asks
+
 ## 14. Naming Guidance
 
 Use clear, stable, descriptive file names.
@@ -649,6 +861,24 @@ Use day-local numbering such as:
 Do not use one global continuous task counter across the whole project.
 
 If parallel branches independently create the same day-local number, resolve the collision pragmatically when histories meet. Prefer renaming the less-established task record or adding a short suffix rather than introducing a global counter system.
+
+For decomposed long tasks, use the parent task's day-local number plus uppercase letters for ordered sub-tasks:
+
+```text
+YYYY-MM-DD_16_parent-task.md
+YYYY-MM-DD_16A_first-sub-task.md
+YYYY-MM-DD_16B_second-sub-task.md
+YYYY-MM-DD_16C_third-sub-task.md
+```
+
+Rules:
+
+- the parent task keeps the numeric id, such as `16`
+- child tasks append uppercase letters without an extra separator, such as `16A`, `16B`, `16C`
+- preserve alphabetical order as execution order unless the execution-loop document explicitly says otherwise
+- do not rename unrelated day-local tasks just to make room for child letters
+- if a decomposition grows beyond `Z`, prefer creating a new parent task or a second-phase parent rather than inventing ambiguous suffixes
+- execution-loop documents that control a decomposed parent should use the parent id, for example `YYYY-MM-DD_16_execution-loop.md`
 
 For decision files, recommended pattern:
 
@@ -684,7 +914,8 @@ When initializing or standardizing docs for a project, the agent should:
 5. route existing content into the correct owner layers
 6. reduce mixed legacy documents after replacements exist
 7. establish AI workflow and task-record structure
-8. keep the system small and useful rather than over-expanding it
+8. add `doc/material/` with local-first ignore rules when user-provided reference material is expected
+9. keep the system small and useful rather than over-expanding it
 
 ## 17. Quality Checklist
 
@@ -695,9 +926,12 @@ Before finishing documentation work, verify:
 3. Stable truth and execution history remain separated.
 4. `AI_CONTEXT.md` is short and current.
 5. `DEV_LOG.md` remains concise.
-6. `Context Delta` is used only for durable memory changes, not general summaries.
-7. Durable decisions are not buried only in task files.
-8. The structure is not more detailed than the project currently needs.
+6. New or modified documents were checked for mojibake or encoding corruption.
+7. Document writes used explicit UTF-8 where files were created or rewritten.
+8. `Context Delta` is used only for durable memory changes, not general summaries.
+9. Durable decisions are not buried only in task files.
+10. Raw or temporary reference material stays in `material` and is not mistaken for stable truth.
+11. The structure is not more detailed than the project currently needs.
 
 ## 18. Execution Instruction
 

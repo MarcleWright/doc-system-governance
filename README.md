@@ -11,4 +11,4 @@ Codex skill for creating, governing, and maintaining AI-friendly project documen
 
 ## Purpose
 
-This skill helps bootstrap, repair, and maintain a project documentation system centered on clear ownership boundaries across product, architecture, design, engineering, and AI workflow records.
+This skill helps bootstrap, repair, and maintain a project documentation system centered on clear ownership boundaries across product, architecture, design, engineering, local reference material, and AI workflow records.
