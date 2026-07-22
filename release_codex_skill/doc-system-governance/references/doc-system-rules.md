@@ -238,6 +238,7 @@ doc/
     AI_WORKFLOW.md
     DEV_LOG.md
     tasks/
+    task_review/
     decisions/
     logs/
 ```
@@ -389,13 +390,28 @@ Role:
 
 - one file per task with full execution detail
 
-### 6.18 `decisions/`
+### 6.18 `task_review/`
+
+Role:
+
+- store reviewer conclusion records for long-task execution loops
+- preserve review findings, validation results, and follow-up classification without turning task files or execution-loop files into long review transcripts
+- make independent review ownership explicit
+
+Writer:
+
+- the agent acting as `Reviewer` writes the review conclusion record
+- if there is no independent reviewer, keep ordinary self-review notes in the task file instead of creating a separate `task_review` record
+- `Planner` may write the record only when explicitly acting as the reviewer for that review pass
+- the implementation agent should not author the final independent review conclusion for its own work
+
+### 6.19 `decisions/`
 
 Role:
 
 - durable work decisions that should remain visible over time
 
-### 6.19 `logs/`
+### 6.20 `logs/`
 
 Role:
 
@@ -433,6 +449,7 @@ Stable truth belongs in:
 Execution history belongs in:
 
 - `ai/tasks`
+- `ai/task_review`
 - `ai/logs`
 - `ai/DEV_LOG.md`
 
@@ -553,6 +570,7 @@ Relationship:
 
 - `DEV_LOG.md` = short recent work index
 - `tasks/` = one full record per task
+- `task_review/` = separate reviewer conclusion records when independent review is part of the workflow
 - `logs/` = archived summaries
 
 Rule:
@@ -744,6 +762,13 @@ General rule regardless of role naming:
 
 - any agent that materially contributes implementation, correction, or validation work to a task should record the relevant result back into the same task file with clear authorship
 
+Review record rule:
+
+- a separate `doc/ai/task_review/` record is for an agent acting as `Reviewer` to record review conclusions for a long-task execution loop or a loop sub-task
+- the reviewer record should contain findings, validation status, scope judgment, required fixes, follow-up classification, and the final review conclusion
+- the implementation agent may link to a reviewer record after it exists, but should not write the independent reviewer conclusion for its own implementation
+- if the same agent only performs self-review before closing its own task, record that in the task file and execution ledger instead of creating a separate reviewer conclusion record
+
 ## 13.1 Long-Task Self-Loop Execution Documents
 
 Use a long-task self-loop execution document only when the user explicitly asks to create or maintain a multi-round autonomous workflow document, such as:
@@ -795,6 +820,7 @@ Required contents:
 - objective and parent task link
 - ordered sub-task list with status
 - parent/sub-task naming rule
+- reviewer record location and responsible reviewer identity when separate review records are used
 - per-round loop procedure
 - scope boundaries and non-goals
 - validation commands and manual-test deferrals
@@ -810,16 +836,19 @@ Per-round loop:
 3. Implement only the current sub-task scope.
 4. Run the agreed automated checks unless explicitly deferred.
 5. Review the full diff and fix in-scope findings.
-6. Update the current task file with execution notes, reviewer notes, final result, and `Context Delta` when durable context changed.
-7. Update `DEV_LOG.md`, and update `AI_CONTEXT.md` only when current handoff context changed.
-8. Update the execution ledger.
-9. Make one local commit for the completed sub-task unless the user requested a different commit policy.
-10. Reread the parent task before selecting the next sub-task.
+6. If an independent review pass is assigned, the agent acting as `Reviewer` writes the review conclusion under `doc/ai/task_review/`.
+7. Update the current task file with execution notes, reviewer record links, final result, and `Context Delta` when durable context changed.
+8. Update `DEV_LOG.md`, and update `AI_CONTEXT.md` only when current handoff context changed.
+9. Update the execution ledger.
+10. Make one local commit for the completed sub-task unless the user requested a different commit policy.
+11. Reread the parent task before selecting the next sub-task.
 
 Reference rule:
 
 - the parent task should link to the execution-loop document
 - active sub-tasks should link back to the execution-loop document
+- review records should link to the execution-loop document and the reviewed parent or sub-task
+- the execution-loop ledger and reviewed task should link to the separate review record when one exists
 - do not duplicate the full execution policy into every sub-task
 
 Boundary rule:
@@ -827,6 +856,45 @@ Boundary rule:
 - if a bug, polish item, or behavior change is found outside the current loop scope, record or create a separate follow-up task
 - do not silently expand the loop into unrelated product, architecture, UI, or protocol work
 - do not push local commits unless the user explicitly asks
+
+## 13.2 Task Review Records
+
+Use `doc/ai/task_review/` when the project needs a separate reviewer conclusion record for a long-task execution loop, especially when one agent implements loop sub-tasks and another agent reviews the result.
+
+Default location:
+
+```text
+doc/ai/task_review/
+```
+
+Recommended filename patterns:
+
+```text
+YYYY-MM-DD_nn_task-review.md
+YYYY-MM-DD_16A_task-review.md
+YYYY-MM-DD_16_execution-loop-review.md
+```
+
+Use the parent or sub-task identifier when the review maps to a numbered long-task decomposition.
+
+Responsible writer:
+
+- the agent acting as `Reviewer` owns the reviewer conclusion record
+- `Planner` may own it only when explicitly acting as reviewer
+- the implementation agent should update the task execution report and fix in-scope findings, but should not author the independent reviewer conclusion for its own work
+
+Required contents:
+
+- reviewed execution-loop document or task link
+- reviewer identity or role
+- review scope
+- validation evidence
+- findings by severity or priority
+- required fixes and whether they are in-scope
+- follow-up classification for out-of-scope items
+- final conclusion such as `Approved`, `Approved With Follow-ups`, `Changes Requested`, or `Blocked`
+
+Review records are AI workflow records. They are not stable product, architecture, design, or engineering truth by themselves. Promote durable conclusions to the correct owner layer only after review.
 
 ## 14. Naming Guidance
 
@@ -879,6 +947,8 @@ Rules:
 - do not rename unrelated day-local tasks just to make room for child letters
 - if a decomposition grows beyond `Z`, prefer creating a new parent task or a second-phase parent rather than inventing ambiguous suffixes
 - execution-loop documents that control a decomposed parent should use the parent id, for example `YYYY-MM-DD_16_execution-loop.md`
+- reviewer conclusion records for a sub-task should usually use the reviewed child id, for example `YYYY-MM-DD_16A_task-review.md`
+- reviewer conclusion records for the whole loop should usually use the parent id, for example `YYYY-MM-DD_16_execution-loop-review.md`
 
 For decision files, recommended pattern:
 
@@ -930,8 +1000,9 @@ Before finishing documentation work, verify:
 7. Document writes used explicit UTF-8 where files were created or rewritten.
 8. `Context Delta` is used only for durable memory changes, not general summaries.
 9. Durable decisions are not buried only in task files.
-10. Raw or temporary reference material stays in `material` and is not mistaken for stable truth.
-11. The structure is not more detailed than the project currently needs.
+10. Separate reviewer conclusion records, when used, live under `ai/task_review/` and are written by the agent acting as `Reviewer`.
+11. Raw or temporary reference material stays in `material` and is not mistaken for stable truth.
+12. The structure is not more detailed than the project currently needs.
 
 ## 18. Execution Instruction
 

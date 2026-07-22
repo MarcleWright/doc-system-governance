@@ -27,7 +27,7 @@ Defines setup, testing, release, and operational guidance.
 Stores local or temporary user-provided reference material. Material is not stable project truth until reviewed and promoted into the correct owner layer.
 
 ## AI
-Defines AI workflow, task records, current context, and work history.
+Defines AI workflow, task records, current context, work history, and reviewer conclusion records when independent review is assigned.
 ```
 
 ## `product/PRODUCT_BRIEF.md`
@@ -251,6 +251,7 @@ If the project uses planner/coder/reviewer separation, add rules such as:
 - Meaningfully out-of-scope follow-up work gets a new task.
 - Planner or Reviewer refines the Context Delta and owns long-term context updates.
 - Planner or Reviewer explicitly classifies any non-local Follow-up item before the task is finalized.
+- When a separate long-loop review record is needed, the agent acting as Reviewer writes it under `ai/task_review/`; the implementation agent should not author the independent reviewer conclusion for its own work.
 
 If role names differ, map responsibilities by behavior rather than by exact label.
 
@@ -335,6 +336,8 @@ Before handing off any document created from these templates, verify:
 ## Final Result
 
 ## Links
+
+### Review Records
 ```
 
 Recommended task filename pattern:
@@ -355,6 +358,8 @@ YYYY-MM-DD_16A_first-sub-task.md
 YYYY-MM-DD_16B_second-sub-task.md
 YYYY-MM-DD_16C_third-sub-task.md
 YYYY-MM-DD_16_execution-loop.md
+YYYY-MM-DD_16A_task-review.md
+YYYY-MM-DD_16_execution-loop-review.md
 ```
 
 ## `ai/tasks/<execution-loop>.md`
@@ -399,6 +404,20 @@ Naming rule:
 - parent task keeps the numeric id, such as `16`
 - child tasks append uppercase letters without an extra separator, such as `16A`, `16B`, `16C`
 - execution-loop document uses the parent id, such as `YYYY-MM-DD_16_execution-loop.md`
+- sub-task reviewer records use the reviewed child id, such as `ai/task_review/YYYY-MM-DD_16A_task-review.md`
+- whole-loop reviewer records use the parent id, such as `ai/task_review/YYYY-MM-DD_16_execution-loop-review.md`
+
+## Review Records
+
+Location:
+
+- `ai/task_review/`
+
+Responsible writer:
+
+- The agent acting as Reviewer writes separate reviewer conclusion records.
+- Planner may write one only when explicitly acting as reviewer.
+- The implementation agent updates the task execution report and fixes in-scope findings, but should not author the independent reviewer conclusion for its own work.
 
 ## Per-Round Loop
 
@@ -407,11 +426,12 @@ Naming rule:
 3. Implement only the current sub-task scope.
 4. Run the agreed automated checks unless this document explicitly defers them.
 5. Review the full diff and fix in-scope findings.
-6. Update the current task file with execution notes, reviewer notes, final result, and Context Delta when durable context changed.
-7. Update `DEV_LOG.md`, and update `AI_CONTEXT.md` only when current handoff context changed.
-8. Update this execution ledger.
-9. Make one local commit for the completed sub-task unless the user requested a different commit policy.
-10. Reread the parent task before selecting the next sub-task.
+6. If an independent review pass is assigned, the agent acting as Reviewer writes a conclusion record under `ai/task_review/`.
+7. Update the current task file with execution notes, reviewer record links, final result, and Context Delta when durable context changed.
+8. Update `DEV_LOG.md`, and update `AI_CONTEXT.md` only when current handoff context changed.
+9. Update this execution ledger.
+10. Make one local commit for the completed sub-task unless the user requested a different commit policy.
+11. Reread the parent task before selecting the next sub-task.
 
 ## Validation
 
@@ -449,13 +469,85 @@ Deferred checks:
 
 ## Execution Ledger
 
-| Round | Date | Task | Result | Commit | Notes |
-|---:|---|---|---|---|---|
-| 1 | YYYY-MM-DD | `ai/tasks/...md` |  |  |  |
+| Round | Date | Task | Review | Result | Commit | Notes |
+|---:|---|---|---|---|---|---|
+| 1 | YYYY-MM-DD | `ai/tasks/...md` | `ai/task_review/...md` |  |  |  |
 
 ## Open Follow-ups Outside This Loop
 
 - `<follow-up task or intentionally empty>`
+```
+
+## `ai/task_review/<task-review>.md`
+
+Use this template when an agent acting as Reviewer records a separate conclusion for a long-task execution loop or one of its sub-tasks.
+
+Do not use this file for ordinary self-review by the implementation agent. Put self-review notes in the task file instead.
+
+Recommended filename patterns:
+
+```text
+YYYY-MM-DD_nn_task-review.md
+YYYY-MM-DD_16A_task-review.md
+YYYY-MM-DD_16_execution-loop-review.md
+```
+
+```md
+# Task Review
+
+## Status
+
+Draft
+
+## Reviewed Item
+
+- Execution loop: `ai/tasks/YYYY-MM-DD_16_execution-loop.md`
+- Task: `ai/tasks/YYYY-MM-DD_16A_first-sub-task.md`
+- Commit: `<hash or pending>`
+
+## Reviewer
+
+- Role: Reviewer
+- Agent: `<agent identity if useful>`
+
+## Review Scope
+
+## Validation Evidence
+
+Automated checks:
+
+- `<command and result>`
+
+Manual checks:
+
+- `<check and result, or explicitly not run>`
+
+## Findings
+
+| Priority | Area | Finding | Required Action | Status |
+|---|---|---|---|---|
+| P1 |  |  |  | Open |
+
+## In-Scope Corrections
+
+- `<correction applied by Reviewer, or intentionally empty>`
+
+## Follow-up Classification
+
+- Must fix before task close: `<items or none>`
+- Separate follow-up task: `<items or none>`
+- Keep task-local only: `<items or none>`
+- Promote to durable docs: `<AI_CONTEXT.md, decisions/, product/, architecture/, design/, engineering/, or none>`
+
+## Final Conclusion
+
+`Approved | Approved With Follow-ups | Changes Requested | Blocked`
+
+## Links
+
+- Reviewed task: `ai/tasks/...md`
+- Execution loop: `ai/tasks/...md`
+- Related follow-up: `ai/tasks/...md`
 ```
 
 ## `ai/decisions/ADR-0001_<title>.md`

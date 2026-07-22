@@ -1,6 +1,6 @@
 ---
 name: doc-system-governance
-description: Use when a project needs a structured documentation system, when existing docs need to be reorganized by ownership boundary, or when a task explicitly includes documentation-system maintenance across product, architecture, design, engineering, material, or ai records. Also use as a low-token end-of-task documentation impact gate to decide whether to skip docs, update ai/DEV_LOG.md with optional ai/AI_CONTEXT.md compression, run full documentation governance, or, only when explicitly requested, create/maintain a long-task self-loop execution document that preserves multi-round task context, review, validation, and local commit rhythm. Do not use for ordinary single-file prose edits or routine code changes unless they materially affect project documentation truth, current AI handoff context, task history, local reference material handling, or an active long-task execution loop.
+description: Use when a project needs a structured documentation system, when existing docs need to be reorganized by ownership boundary, or when a task explicitly includes documentation-system maintenance across product, architecture, design, engineering, material, or ai records. Also use as a low-token end-of-task documentation impact gate to decide whether to skip docs, update ai/DEV_LOG.md with optional ai/AI_CONTEXT.md compression, run full documentation governance, or, only when explicitly requested, create/maintain a long-task self-loop execution document or reviewer conclusion record that preserves multi-round task context, review, validation, and local commit rhythm. Do not use for ordinary single-file prose edits or routine code changes unless they materially affect project documentation truth, current AI handoff context, task history, local reference material handling, an active long-task execution loop, or a task review record.
 ---
 
 # Doc System Governance
@@ -18,6 +18,8 @@ Read [references/file-templates.md](references/file-templates.md) when creating 
 
 Read [references/file-templates.md](references/file-templates.md) when the user explicitly asks to create or update a "long-task self-loop execution" document, "长任务自循环执行" document, execution loop, or equivalent multi-round task-control record.
 
+Read [references/file-templates.md](references/file-templates.md) when the user explicitly asks to create or update a `task_review` reviewer conclusion record for a long-task execution loop.
+
 ## Fast Gate
 
 Before loading reference files or inspecting the whole doc tree, classify the current task:
@@ -25,7 +27,7 @@ Before loading reference files or inspecting the whole doc tree, classify the cu
 1. **Skip docs** when the change is a local code fix, small prose edit, formatting cleanup, dependency bump, or experiment that does not change stable project truth, current AI handoff context, task history, user-visible behavior, architecture, workflow, setup, testing, release, or follow-up work.
 2. **Light AI maintenance** when there was a substantive project change but no broader documentation layer changed. Update `DEV_LOG.md` by default, update a task file when detail is worth preserving, and update `AI_CONTEXT.md` only when the compressed current context for the next AI agent changed.
 3. **Full governance** when the change creates or repairs the doc system, reorganizes ownership boundaries, touches multiple documentation layers, changes product behavior, architecture, design, engineering workflow, durable decisions, or exposes stale/mixed documentation that must be split.
-4. **Long-task self-loop execution** only when the user explicitly asks to create or maintain a document for multi-round autonomous task execution, especially wording such as "创建长任务自循环执行文档", "create self-loop execution document", "create execution loop md", or "落一个 execution-loop 文档". This is an AI workflow record under `doc/ai/tasks/` and normally combines task sequencing, review cadence, validation rules, documentation maintenance, and local commit requirements.
+4. **Long-task self-loop execution** only when the user explicitly asks to create or maintain a document for multi-round autonomous task execution, especially wording such as "创建长任务自循环执行文档", "create self-loop execution document", "create execution loop md", or "落一个 execution-loop 文档". This is an AI workflow record under `doc/ai/tasks/` and normally combines task sequencing, review cadence, validation rules, documentation maintenance, and local commit requirements. When the user explicitly wants an independent reviewer conclusion record, use `doc/ai/task_review/`.
 
 Default to the lightest class that preserves correctness. If unsure between skip and light maintenance, check only `doc/ai/DEV_LOG.md`, `doc/ai/AI_CONTEXT.md`, and the relevant task file before deciding. If unsure between light maintenance and full governance, read `references/doc-system-rules.md`.
 
@@ -71,6 +73,7 @@ The execution document should make the loop explicit enough that a future agent 
 - run the agreed automated checks unless the document explicitly defers a class of checks
 - review the diff before closing the round
 - update the current task file with execution notes, reviewer notes, final result, and `Context Delta` when durable context changed
+- when an independent reviewer is assigned, have the agent acting as `Reviewer` write the reviewer conclusion under `doc/ai/task_review/` and link it from the execution document and reviewed task
 - update `DEV_LOG.md` and `AI_CONTEXT.md` only when the normal governance rules require it
 - reread the parent task before selecting the next sub-task
 - make exactly one local commit per completed sub-task unless the user requests otherwise
@@ -85,6 +88,7 @@ The execution document must also preserve:
 - manual test deferrals and who owns them
 - known follow-ups that must not be mixed into the current loop
 - a ledger of completed rounds with commit hashes when available
+- reviewer conclusion links when separate review records are used
 
 When creating a long-task self-loop document, add lightweight references from the parent task and relevant sub-task files so future agents can find the control document quickly. Do not duplicate the full loop policy into every sub-task.
 
