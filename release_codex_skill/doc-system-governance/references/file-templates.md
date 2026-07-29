@@ -305,6 +305,8 @@ Before handing off any document created from these templates, verify:
 
 ## Status
 
+## Task Brief
+
 ## Goal
 
 ## Scope
@@ -339,6 +341,8 @@ Before handing off any document created from these templates, verify:
 
 ### Review Records
 ```
+
+Keep `Task Brief` to 2-5 sentences that summarize the immediate background or current problem, what this task will change, and the expected outcome. Keep detailed goals, boundaries, implementation steps, and acceptance conditions in `Goal`, `Scope`, `Non-goals`, `Plan`, and `Acceptance Criteria`.
 
 Recommended task filename pattern:
 
